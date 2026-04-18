@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>toasterrepairman</title>
+    <style>
+        :root {
+            --n0: #2E3440; --n1: #3B4252; --n2: #434C5E; --n3: #4C566A;
+            --n4: #D8DEE9; --n5: #E5E9F0; --n6: #ECEFF4;
+            --n7: #8FBCBB; --n8: #88C0D0; --n9: #81A1C1; --n10: #5E81AC;
+            --n11: #BF616A; --n12: #D08770; --n13: #EBCB8B; --n14: #A3BE8C; --n15: #B48EAD;
+        }
+
+        :root {
+            --bg: var(--n0); --surface: var(--n1); --text: var(--n6);
+            --muted: var(--n2); --dim: var(--n4); --accent: var(--n8);
+        }
+
+        @media (prefers-color-scheme: light) {
+            :root {
+                --bg: var(--n6); --surface: var(--n5); --text: var(--n0);
+                --muted: var(--n4); --dim: var(--n3); --accent: var(--n10);
+            }
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Courier New', Courier, monospace;
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            transition: background 0.4s ease, color 0.4s ease;
+        }
+
+        header {
+            padding: 2.5rem 2.5rem 0;
+        }
+
+        .monogram {
+            width: clamp(4rem, 14vw, 9rem);
+            height: auto;
+            display: block;
+        }
+
+        .rule {
+            border: none;
+            border-top: 1px solid var(--muted);
+            margin: 1.5rem 0 0;
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 1.2rem;
+            padding: 1.5rem 0;
+        }
+
+        .section-label {
+            font-size: 0.7rem;
+            letter-spacing: 0.35em;
+            text-transform: uppercase;
+            color: var(--dim);
+            padding: 0 2.5rem;
+        }
+
+        .carousel-viewport {
+            overflow: hidden;
+            padding: 0 2.5rem;
+            touch-action: pan-y;
+        }
+
+        .carousel-strip {
+            display: flex;
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: transform;
+        }
+
+        .slide {
+            min-width: 100%;
+            container-type: inline-size;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .slide-title {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            height: clamp(2.5rem, 5cqi, 5rem);
+        }
+
+        .slide-icon {
+            width: clamp(2.5rem, 5cqi, 5rem);
+            height: clamp(2.5rem, 5cqi, 5rem);
+            object-fit: contain;
+            flex-shrink: 0;
+        }
+
+        .slide-name {
+            font-size: clamp(1.6rem, 6cqi, 6rem);
+            font-weight: 900;
+            letter-spacing: -0.05em;
+            line-height: 1;
+            text-transform: uppercase;
+            min-width: 0;
+            display: flex;
+            align-self: center;
+            transform: translateY(0.04em);
+        }
+
+        .slide-name .gradient {
+            background: linear-gradient(to right, var(--text), var(--n13));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            padding-right: 0.08em;
+        }
+
+        .slide-name .gradient-purple {
+            background: linear-gradient(to right, var(--text), var(--n15));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            padding-right: 0.08em;
+        }
+
+        .slide-screenshot-wrap {
+            max-width: 720px;
+            height: 42vh;
+        }
+
+        .slide-screenshot {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border: 2px solid var(--muted);
+            transition: border-color 0.3s;
+            display: block;
+        }
+
+        .slide-meta {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            font-size: 0.8rem;
+            color: var(--dim);
+        }
+
+        .slide-meta a {
+            color: var(--accent);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s;
+            font-size: 0.8rem;
+        }
+        .slide-meta a:hover, .slide-meta a:focus-visible {
+            border-bottom-color: var(--accent);
+            outline: none;
+        }
+        .slide-meta .download {
+            color: var(--n15);
+        }
+        .slide-meta .download:hover, .slide-meta .download:focus-visible {
+            border-bottom-color: var(--n15);
+        }
+
+        .carousel-nav {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            padding: 0 2.5rem;
+        }
+
+        .nav-btn {
+            background: none;
+            border: 2px solid var(--muted);
+            color: var(--text);
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.95rem;
+            padding: 0.35rem 0.9rem;
+            transition: background 0.2s, color 0.2s, border-color 0.2s;
+        }
+        .nav-btn:hover, .nav-btn:focus-visible {
+            background: var(--text);
+            color: var(--bg);
+            border-color: var(--text);
+            outline: none;
+        }
+
+        .counter {
+            font-size: 0.75rem;
+            color: var(--dim);
+            letter-spacing: 0.12em;
+            min-width: 4.5em;
+            text-align: center;
+        }
+
+        .dots {
+            display: flex;
+            gap: 0.45rem;
+            align-items: center;
+        }
+
+        .dot {
+            width: 7px;
+            height: 7px;
+            background: var(--muted);
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            transition: background 0.2s;
+            display: block;
+        }
+        .dot:hover { background: var(--dim); }
+        .dot.active { background: var(--text); }
+
+        .carousel-nav-spacer { flex: 1; }
+
+        footer {
+            padding: 1.2rem 2.5rem;
+            border-top: 1px solid var(--muted);
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+        }
+
+        footer a {
+            color: var(--dim);
+            text-decoration: none;
+            font-size: 0.75rem;
+            transition: color 0.2s;
+        }
+        footer a:hover { color: var(--accent); }
+
+        @media (max-width: 640px) {
+            header { padding: 1.5rem 1.5rem 0; }
+            .section-label { padding: 0 1.5rem; }
+            .carousel-viewport { padding: 0 1.5rem; }
+            .carousel-nav { padding: 0 1.5rem; }
+            footer { padding: 1rem 1.5rem; }
+            .slide-screenshot-wrap { max-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <svg class="monogram" viewBox="0 0 80 120" xmlns="http://www.w3.org/2000/svg" aria-label="TR monogram for toasterrepairman" role="img">
+            <defs>
+                <clipPath id="t-clip">
+                    <text x="40" y="82" text-anchor="middle" font-family="'Courier New', Courier, monospace" font-size="100" font-weight="900">T</text>
+                </clipPath>
+            </defs>
+            <text x="40" y="82" text-anchor="middle" font-family="'Courier New', Courier, monospace" font-size="100" font-weight="900" fill="#88C0D0">T</text>
+            <text x="36" y="82" text-anchor="middle" font-family="'Courier New', Courier, monospace" font-size="100" font-weight="900" fill="#8FBCBB">R</text>
+            <text x="36" y="82" text-anchor="middle" font-family="'Courier New', Courier, monospace" font-size="100" font-weight="900" fill="#5E81AC" clip-path="url(#t-clip)">R</text>
+        </svg>
+    </header>
+
+    <hr class="rule">
+
+    <main>
+        <span class="section-label">Projects</span>
+        <div class="carousel-viewport">
+            <div class="carousel-strip" id="carousel"></div>
+        </div>
+        <nav class="carousel-nav" aria-label="Project navigation">
+            <button class="nav-btn" id="prev" aria-label="Previous project">←</button>
+            <div class="dots" id="dots"></div>
+            <span class="counter" id="counter"></span>
+            <div class="carousel-nav-spacer"></div>
+            <button class="nav-btn" id="next" aria-label="Next project">→</button>
+        </nav>
+    </main>
+
+    <footer>
+        <a href="https://github.com/toasterrepairman">github.com/toasterrepairman</a>
+    </footer>
+
+    <script>
+        const projects = [
+            {
+                name: "Stickerbook",
+                renderName: () => '<span class="gradient-purple">STICKERBOOK</span>',
+                description: "sticker collage tool",
+                icon: "https://raw.githubusercontent.com/toasterrepairman/stickerbook/master/resources/com.github.toasterrepair.Stickerbook.png",
+                screenshot: "https://raw.githubusercontent.com/toasterrepairman/stickerbook/master/resources/stickerbook-screenshot.png",
+                repo: "https://github.com/toasterrepairman/stickerbook",
+                download: "https://github.com/toasterrepairman/stickerbook/releases/latest"
+            },
+            {
+                name: "Empress",
+                renderName: () => '<span class="gradient">EMPRESS</span>',
+                description: "MPRIS-enabled miniplayer",
+                icon: "https://raw.githubusercontent.com/toasterrepairman/empress/master/resources/com.github.toasterrepair.empress.png",
+                screenshot: "https://raw.githubusercontent.com/toasterrepairman/empress/master/resources/screenshot.png",
+                repo: "https://github.com/toasterrepairman/empress",
+                download: "https://github.com/toasterrepairman/empress/releases/latest"
+            }
+        ];
+
+        const pad = n => String(n).padStart(2, '0');
+        let current = 0;
+
+        const carousel = document.getElementById('carousel');
+        const dotsEl = document.getElementById('dots');
+        const counterEl = document.getElementById('counter');
+        const prevBtn = document.getElementById('prev');
+        const nextBtn = document.getElementById('next');
+
+        function buildSlides() {
+            carousel.innerHTML = projects.map(p => `
+                <article class="slide">
+                    <div class="slide-title">
+                        <img class="slide-icon" src="${p.icon}" alt="" loading="lazy">
+                        <h2 class="slide-name">${p.renderName ? p.renderName() : p.name.toUpperCase()}</h2>
+                    </div>
+                    <div class="slide-screenshot-wrap">
+                        <img class="slide-screenshot" src="${p.screenshot}" alt="${p.name} screenshot" loading="lazy">
+                    </div>
+                    <div class="slide-meta">
+                        <span>${p.description}</span>
+                        <a href="${p.repo}" target="_blank" rel="noopener noreferrer">→ source</a>
+                        <a class="download" href="${p.download}" target="_blank" rel="noopener noreferrer">→ download</a>
+                    </div>
+                </article>
+            `).join('');
+        }
+
+        function updateNav() {
+            counterEl.textContent = `${pad(current + 1)} / ${pad(projects.length)}`;
+            dotsEl.innerHTML = projects.map((_, i) =>
+                `<button class="dot${i === current ? ' active' : ''}" data-i="${i}" aria-label="Project ${i + 1}"></button>`
+            ).join('');
+            carousel.style.transform = `translateX(-${current * 100}%)`;
+        }
+
+        function goTo(i) {
+            current = ((i % projects.length) + projects.length) % projects.length;
+            updateNav();
+        }
+
+        prevBtn.addEventListener('click', () => goTo(current - 1));
+        nextBtn.addEventListener('click', () => goTo(current + 1));
+        dotsEl.addEventListener('click', e => {
+            if (e.target.dataset.i !== undefined) goTo(+e.target.dataset.i);
+        });
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'ArrowLeft') goTo(current - 1);
+            else if (e.key === 'ArrowRight') goTo(current + 1);
+        });
+
+        let touchX = 0;
+        let wheelLock = false;
+        const viewport = document.querySelector('.carousel-viewport');
+
+        carousel.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; }, { passive: true });
+        carousel.addEventListener('touchend', e => {
+            const d = touchX - e.changedTouches[0].clientX;
+            if (Math.abs(d) > 50) goTo(current + (d > 0 ? 1 : -1));
+        });
+
+        viewport.addEventListener('wheel', e => {
+            if (Math.abs(e.deltaX) > Math.abs(e.deltaY) && Math.abs(e.deltaX) > 30 && !wheelLock) {
+                wheelLock = true;
+                goTo(current + (e.deltaX > 0 ? 1 : -1));
+                setTimeout(() => { wheelLock = false; }, 600);
+            }
+        }, { passive: true });
+
+        buildSlides();
+        updateNav();
+    </script>
+</body>
+</html>
