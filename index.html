@@ -134,6 +134,14 @@
             padding-right: 0.08em;
         }
 
+        .slide-name .gradient-blue {
+            background: linear-gradient(to right, var(--text), #5e81ac);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            padding-right: 0.08em;
+        }
+
         .slide-screenshot-wrap {
             max-width: 720px;
             height: 42vh;
@@ -307,6 +315,15 @@
                 screenshot: "https://raw.githubusercontent.com/toasterrepairman/empress/master/resources/screenshot.png",
                 repo: "https://github.com/toasterrepairman/empress",
                 download: "https://github.com/toasterrepairman/empress/releases/latest"
+            },
+            {
+                name: "Shadowpuppet",
+                renderName: () => '<span class="gradient-blue">SHADOWPUPPET</span>',
+                description: "convert image data to OBJ meshes",
+                icon: "https://raw.githubusercontent.com/toasterrepairman/shadowpuppet/master/resources/icon-shadowpuppet.png",
+                screenshot: "https://raw.githubusercontent.com/toasterrepairman/shadowpuppet/master/resources/shadowpuppet_screenshot.png",
+                repo: "https://github.com/toasterrepairman/shadowpuppet",
+                download: "https://github.com/toasterrepairman/shadowpuppet/releases/latest"
             }
         ];
 
